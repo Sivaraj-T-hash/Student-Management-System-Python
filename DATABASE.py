@@ -1,97 +1,61 @@
+import os
+
 students = []
+DATA_FILE = "DATA.txt"
+
+def load_data():
+    """Restores student records from the text file when the program starts."""
+    if os.path.exists(DATA_FILE):
+        try:
+            with open(DATA_FILE, "r") as f:
+                lines = f.readlines()
+                # Skip the two header lines
+                for line in lines[2:]:
+                    parts = [p.strip() for p in line.split("|")]
+                    if len(parts) == 6:
+                        students.append({
+                            "id": parts[0], "name": parts[1], "dept": parts[2],
+                            "sec": parts[3], "year": parts[4], "joined": parts[5]
+                        })
+        except Exception as e:
+            print(f"Loading error: {e}")
+
 def add_student():
-    student_id = input("Enter student ID: ")
-    if any(student["id"] == student_id for student in students):
-        print("A student with this ID already exists.\n")
+    sid = input("Enter ID: ")
+    if any(s["id"] == sid for s in students):
+        print("Error: ID already exists.")
         return
-
-    name = input("Enter student name: ")
-    department=input("Enter student department: ")
-    section=input("Enter student section: ")
-    year=input("Enter year of studying: ")
-    stu_join=input("Enter student joining year: ")
-    student = {"id": student_id, "name": name,"department":department,"section":section,"year":year,"year of joining":stu_join}
+    
+    student = {
+        "id": sid,
+        "name": input("Name: "),
+        "dept": input("Department: "),
+        "sec": input("Section: "),
+        "year": input("Current Year: "),
+        "joined": input("Joining Year: ")
+    }
     students.append(student)
-    print(f"Student {name} with ID {student_id} added successfully.\n")
+    print("Success: Student added.")
 
-def view_student():
-    student_id = input("Enter the student ID to view details: ")
-    for student in students:
-        if student["id"] == student_id:
-            print("\nStudent Details:")
-            print(f"ID              : {student['id']}")
-            print(f"Name            : {student['name']}")
-            print(f"Department      : {student['department']}")
-            print(f"Section         : {student['section']}")
-            print(f"Year            : {student['year']}")
-            print(f"Year of Joining : {student['year of joining']}")
-            return
-    print("Student not found.\n")
-
-def remove_student():
-    student_id = input("Enter the student ID to remove: ")
-    for student in students:
-        if student["id"] == student_id:
-            students.remove(student)
-            print(f"Student with ID {student_id} has been removed successfully.\n")
-            return
-    print("Student not found.\n")
-def alldata():
-    for student in students:
-        print("\nStudent Details:")
-        print(f"ID              : {student['id']}")
-        print(f"Name            : {student['name']}")
-        print(f"Department      : {student['department']}")
-        print(f"Section         : {student['section']}")
-        print(f"Year            : {student['year']}")
-        print(f"Year of Joining : {student['year of joining']}")
-        
-def display_menu():
-    """Display the main menu."""
-    print("Student Database Menu:")
-    print("1. Add Student")
-    print("2. View Student")
-    print("3. Remove Student")
-    print("4. To View All Students Data")
-    print("5. To Update the Students Data into Text file")
-    print("6. To View Students Data in the Text File")
-    print("7. Exit")
-def update():
-    f=open("DATA.txt","a+")
-    b=str(students)
-    f.write(b)
-    print(f.read())
-    f.close()
-    print("DATA UPDATED TO TEXT DOCUMENT SUCCESSFULLY")
-def viewdata():
-    f=open("DATA.txt","r")
-    print(f.read())
-    f.close()
+def update_file():
+    """Saves records in a clean, readable table format."""
+    with open(DATA_FILE, "w") as f:
+        f.write(f"{'ID':<10} | {'Name':<20} | {'Dept':<15} | {'Sec':<5} | {'Year':<5} | {'Joined':<10}\n")
+        f.write("-" * 80 + "\n")
+        for s in students:
+            f.write(f"{s['id']:<10} | {s['name']:<20} | {s['dept']:<15} | {s['sec']:<5} | {s['year']:<5} | {s['joined']:<10}\n")
+    print("Database saved to DATA.txt.")
 
 def main():
+    load_data()
     while True:
-        display_menu()
-        choice = input("Enter your choice (1-7): ").strip()
-        if choice == "1":
-            add_student()
+        print("\n1. Add | 2. View All | 3. Save | 4. Exit")
+        choice = input("Select: ")
+        if choice == "1": add_student()
         elif choice == "2":
-            view_student()
-        elif choice == "3":
-            remove_student()
-        elif choice == "4":
-            alldata()
-        elif choice == "5":
-            update()
-        elif choice == "6":
-            viewdata()
-        elif choice == "7":
-            print("Exiting the Student Database. Goodbye!")
-            break
-        else:
-            print("Invalid choice! Please select an option between 1 and 7.\n")
+            for s in students: print(f"ID: {s['id']} | Name: {s['name']}")
+        elif choice == "3": update_file()
+        elif choice == "4": break
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+    main()
