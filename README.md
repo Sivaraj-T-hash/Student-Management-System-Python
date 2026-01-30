@@ -17,3 +17,7 @@ A terminal-based application built with **Python** to streamline student record 
 1. **Clone the repository**:
    ```bash
    git clone [https://github.com/Sivaraj-T-hash/Student-Management-System-Python.git](https://github.com/Sivaraj-T-hash/Student-Management-System-Python.git)
+## 👤 Developer
+**Sivaraj T**
+* B.Tech IT Student @ Velammal Engineering College
+* Web Developer
